@@ -63,7 +63,7 @@ class App extends Component
                       </Marker>
                   :''}
                 </Map>
-              
+              {/*
                 <Card body className="message-form">
                   <CardTitle>Welcome</CardTitle>
                   <CardText>Pls leave a message & location</CardText>
@@ -81,6 +81,7 @@ class App extends Component
                   </Form>
                   
                 </Card>
+             */ }
             </div> 
       );
     }
