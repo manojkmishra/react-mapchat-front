@@ -12,7 +12,7 @@ var myIcon = L.icon({
 
 
 class App extends Component 
-{ state = { location: { lat: 51.505, lng: -0.09 },
+{ state = { location: { lat: 51.505, lng: -0.09 },pin:'',stat:'',
             haveUsersLocation: false, zoom: 2,
             userMessage:{name:'',message:''}
           }
@@ -28,10 +28,20 @@ class App extends Component
     }
   componentDidMount()
         { navigator.geolocation.getCurrentPosition((position)=> 
-                        {   this.setState({location:{lat:position.coords.latitude,
-                                                  lng:position.coords.longitude},
-                                                  haveUsersLocation: true, zoom: 13
-                                        })
+                        { console.log('loc acc provided pos=',position.coords)  
+                        //fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyB3xuNqeWyb_gNKElI41YO2oeNjhfe6whE`)
+                        fetch(`http://api.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
+                        .then(res=>res.json())
+                            .then(loc=>{
+                                console.log('loccc-',loc)
+                                this.setState({location:{lat:position.coords.latitude,
+                                  lng:position.coords.longitude},
+                                  haveUsersLocation: true, zoom: 13,
+                                  pin:loc.postalCodes[0].postalCode,
+                                  stat:loc.postalCodes[0].adminCode1
+                        })
+                            })  
+                        
                             console.log('componentDidMount-state',this.state)
                         },
                       ()=>{console.log('loc access not provided')
@@ -40,7 +50,9 @@ class App extends Component
                             .then(location=>{console.log('ipapi-loc=',location)
                                               this.setState({location:{lat:location.latitude,
                                                               lng:location.longitude},
-                                                              haveUsersLocation: true, zoom: 13
+                                                              haveUsersLocation: true, zoom: 13,
+                                                             pin:location.postal,
+                                                             stat:location.region_code
                                                           })
                                             })
                           }
@@ -63,11 +75,12 @@ class App extends Component
                       </Marker>
                   :''}
                 </Map>
-              {/*
+              {
                 <Card body className="message-form">
                   <CardTitle>Welcome</CardTitle>
-                  <CardText>Pls leave a message & location</CardText>
-
+                  <CardText>STATE : {this.state.stat}</CardText>
+                  <CardText>ZIPCODE : {this.state.pin}</CardText>
+{ /*
                   <Form onSubmit={this.formSubmitted}>
                     <FormGroup>
                       <Label for="name">Name</Label>
@@ -79,9 +92,9 @@ class App extends Component
                     </FormGroup>
                     <Button type="submit" color="info" disabled={!this.state.haveUsersLocation}>Send</Button>
                   </Form>
-                  
+*/}
                 </Card>
-             */ }
+              }
             </div> 
       );
     }
