@@ -30,16 +30,18 @@ class App extends Component
   componentDidMount()
         { navigator.geolocation.getCurrentPosition((position)=> 
                         { console.log('loc acc provided pos=',position.coords)  
-                        //fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyB3xuNqeWyb_gNKElI41YO2oeNjhfe6whE`)
-                        fetch(`http://api.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
+                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyB3xuNqeWyb_gNKElI41YO2oeNjhfe6whE`)
+                       // fetch(`https://secure.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
                         .then(res=>res.json())
                             .then(loc=>{
                                 console.log('loccc-',loc)
                                 this.setState({location:{lat:position.coords.latitude,
                                   lng:position.coords.longitude},
                                   haveUsersLocation: true, zoom: 13,
-                                  pin:loc.postalCodes[0].postalCode,
-                                  stat:loc.postalCodes[0].adminCode1
+                                  pin:loc.results[0].address_components[6].short_name,
+                                  stat:loc.results[0].address_components[4].short_name,
+                                  //pin:loc.results[0].address_components[6].short_name,
+                                  //stat:loc.results[0].address_components[4].short_name,
                         })
                             })  
                         
