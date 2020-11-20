@@ -30,7 +30,7 @@ class App extends Component
   componentDidMount()
         { navigator.geolocation.getCurrentPosition((position)=> 
                         { console.log('loc acc provided pos=',position.coords)  
-                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=AIzaSyB3xuNqeWyb_gNKElI41YO2oeNjhfe6whE`)
+                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.REACT_APP_GEO_KEY}`)
                        // fetch(`https://secure.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
                         .then(res=>res.json())
                             .then(loc=>{
