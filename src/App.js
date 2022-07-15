@@ -28,34 +28,41 @@ class App extends Component
           }))
     }
   componentDidMount()
-        { navigator.geolocation.getCurrentPosition((position)=> 
-                        { console.log('loc acc provided pos=',position.coords)  
-                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.REACT_APP_GEO_KEY}`)
-                       // fetch(`https://secure.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
+        { 
+          
+          navigator.geolocation.getCurrentPosition((position)=> 
+                        { console.log('location access provided pos=',position.coords)  
+                        fetch(`https://secure.geonames.org/findNearbyPostalCodesJSON?username=demo&lat=${position.coords.latitude}&lng=${position.coords.longitude}`)
+                        //fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&key=${process.env.REACT_APP_GEO_KEY}`)
                         .then(res=>res.json())
                             .then(loc=>{
-                                console.log('loccc-',loc)
+                                console.log('geonames api location-',loc)
                                 this.setState({location:{lat:position.coords.latitude,
                                   lng:position.coords.longitude},
                                   haveUsersLocation: true, zoom: 13,
-                                  pin:loc.results[0].address_components[6].short_name,
-                                  stat:loc.results[0].address_components[4].short_name,
+                                  //google api
                                   //pin:loc.results[0].address_components[6].short_name,
                                   //stat:loc.results[0].address_components[4].short_name,
-                        })
+                                  //geonames api
+                                  //pin:loc.results[0].address_components[6].short_name,
+                                  //stat:loc.results[0].address_components[4].short_name,
+                                  stat:loc.postalCodes[0].placeName.concat(', ',loc.postalCodes[0].adminCode1),
+                                  pin:loc.postalCodes[0].postalCode,
+                                            })
                             })  
-                        
                             console.log('componentDidMount-state',this.state)
                         },
-                      ()=>{console.log('loc access not provided')
+                      ()=>{console.log('Browser location access not provided')
                             fetch('https://ipapi.co/json')
                             .then(res=>res.json())
-                            .then(location=>{console.log('ipapi-loc=',location)
-                                              this.setState({location:{lat:location.latitude,
-                                                              lng:location.longitude},
+                            .then(location=>{console.log('ipapi-location=',location)
+                                              this.setState({location:{
+                                                                lat:location.latitude,
+                                                                lng:location.longitude
+                                                              },
                                                               haveUsersLocation: true, zoom: 13,
-                                                             pin:location.postal,
-                                                             stat:location.region_code
+                                                              pin:location.postal,
+                                                              stat:location.region_code
                                                           })
                                             })
                           }
@@ -74,7 +81,7 @@ class App extends Component
                   />
                   {this.state.haveUsersLocation ? 
                       <Marker position={position} icon={myIcon}>
-                        <Popup> Popup value </Popup>
+                        <Popup> {this.state.pin}, {this.state.stat} </Popup>
                       </Marker>
                   :''}
                 </Map>
